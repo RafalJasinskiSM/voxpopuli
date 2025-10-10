@@ -5,10 +5,13 @@
 
 from typing import Optional
 
-from tqdm.contrib.concurrent import process_map
+from parallelbar import progress_map
 
 
 def multiprocess_run(
         a_list: list, func: callable, n_workers: Optional[int] = None
 ):
-    process_map(func, a_list, max_workers=n_workers, chunksize=1)
+    total = len(a_list)
+    if n_workers is None:
+        n_workers = 8
+    progress_map(func, a_list, n_cpu=n_workers, total=total)
