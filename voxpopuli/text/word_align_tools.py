@@ -68,12 +68,13 @@ def cut_align_data(
         ]
         out.append(AlignedData(f"{base_name}_{len(out)}", out_align))
         last_index = cut_index
-        shift = max(last_end, audio_align_data.data[last_index].end - padding_start)
+        shift = max(
+            last_end, audio_align_data.data[last_index].end - padding_start)
 
     if last_index < len(audio_align_data[-1]):
         out_align = [
             AlignedWord(max(0, x.start - shift), max(0, x.end - shift), x.word)
-            for x in audio_align_data.data[index_align[-1] :]
+            for x in audio_align_data.data[index_align[-1]:]
         ]
         out.append(AlignedData(f"{base_name}_{len(out)}", out_align))
 

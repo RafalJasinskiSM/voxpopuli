@@ -62,11 +62,13 @@ def load_segments_from_pkl(pkl_path, min_duration):
 
 
 def get_pyannote_segments(path_audio, pyannote_cfg, min_duration=0.1):
-    pkl_path = path_audio.parent / f"{path_audio.stem}.pyannote.{pyannote_cfg}.pkl"
+    pkl_path = path_audio.parent / \
+        f"{path_audio.stem}.pyannote.{pyannote_cfg}.pkl"
     if pkl_path.is_file():
         return load_segments_from_pkl(pkl_path, min_duration)
 
-    json_path = path_audio.parent / f"{path_audio.stem}.pyannote.{pyannote_cfg}.json"
+    json_path = path_audio.parent / \
+        f"{path_audio.stem}.pyannote.{pyannote_cfg}.json"
     if json_path.is_file():
         with open(json_path, "r") as f:
             segments = json.load(f)
@@ -105,7 +107,7 @@ def is_id_valid(name: str):
 
 def get_batches(list_like, batch_size: int):
     for i in list(range(0, len(list_like), batch_size)):
-        yield list_like[i : min(i + batch_size, len(list_like))]
+        yield list_like[i: min(i + batch_size, len(list_like))]
 
 
 def is_plenary(_id: str):
@@ -123,7 +125,8 @@ def to_wav2letter_format(data: torch.tensor, sr: int) -> torch.tensor:
     else:
         raise ValueError("Invalid tensor format")
     if sr != 16000:
-        data = torchaudio.transforms.Resample(orig_freq=sr, new_freq=16000)(data)
+        data = torchaudio.transforms.Resample(
+            orig_freq=sr, new_freq=16000)(data)
         data = torch.clamp(data, min=-1.0, max=1.0)
     return data
 

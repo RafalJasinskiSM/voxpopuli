@@ -64,7 +64,8 @@ def split_with_vad_wav(
         end = int(r._meta.end * sr)
         path_seg = out_dir / f"{out_dir.stem}_{i}.flac"
         path_timestamp = get_path_timestamp(path_seg, ".vad.timestamp")
-        save_timestamp(path_timestamp, r._meta.start + shift, r._meta.end + shift)
+        save_timestamp(path_timestamp, r._meta.start +
+                       shift, r._meta.end + shift)
         sf.write(
             str(path_seg), waveform[start:end], sr, subtype="PCM_16", format="FLAC"
         )
@@ -116,8 +117,10 @@ def split_audio(
     def save_clip(i, start, end):
         name = f"{i:03d}_{start:.0f}-{end:.0f}"
         out_audio_path = out_root / f"{name}.flac"
-        save_timestamp(get_path_timestamp(out_audio_path, pyannote_suffix), start, end)
-        clip, _ = sf.read(audio_path, start=int(start * sr), stop=int(end * sr))
+        save_timestamp(get_path_timestamp(
+            out_audio_path, pyannote_suffix), start, end)
+        clip, _ = sf.read(audio_path, start=int(
+            start * sr), stop=int(end * sr))
         sf.write(out_audio_path, clip, sr, subtype="PCM_16", format="FLAC")
         return out_audio_path
 
@@ -187,14 +190,16 @@ class FileSegmenter:
         id_ = audio_path.stem.split("_")[0]
         if not audio_path.exists():
             return False
-        segments = get_segments(audio_path, self.pyannote_cfg, self.min_duration)
+        segments = get_segments(
+            audio_path, self.pyannote_cfg, self.min_duration)
         if segments is None:
             return False
 
         out_root = self.get_out_root(id_, lang)
 
         pyannote_suffix = f".pyannote.{self.pyannote_cfg}"
-        out_audio = split_audio(audio_path, segments, out_root, pyannote_suffix)
+        out_audio = split_audio(audio_path, segments,
+                                out_root, pyannote_suffix)
 
         if not self.split_vad:
             return True
@@ -202,7 +207,8 @@ class FileSegmenter:
         for audio_path in out_audio:
             dir_out = audio_path.parent / audio_path.stem
             dir_out.mkdir()
-            path_timestamp_audio = get_path_timestamp(audio_path, pyannote_suffix)
+            path_timestamp_audio = get_path_timestamp(
+                audio_path, pyannote_suffix)
             shift = load_timestamp(path_timestamp_audio)[0]
             vad_seq = split_vad_non_wav(
                 audio_path,
@@ -216,7 +222,8 @@ class FileSegmenter:
             os.remove(audio_path)
             if len(vad_seq) == 0:
                 shutil.rmtree(dir_out)
-                os.remove(audio_path.with_suffix(f".pyannote.{self.pyannote_cfg}"))
+                os.remove(audio_path.with_suffix(
+                    f".pyannote.{self.pyannote_cfg}"))
 
         return True
 
@@ -253,7 +260,8 @@ def main():
     parser = argparse.ArgumentParser(
         "Cut the data by speaker. " "run_pyanote_sd.py must have been run before"
     )
-    parser.add_argument("--root", type=str, required=True, help="Input root directory")
+    parser.add_argument("--root", type=str, required=True,
+                        help="Input root directory")
     parser.add_argument(
         "-o",
         "--output",
@@ -273,7 +281,8 @@ def main():
         type=int,
         help="If given, maximum number of session to deal with",
     )
-    parser.add_argument("--nproc", default=8, type=int, help="Number of processes")
+    parser.add_argument("--nproc", default=8, type=int,
+                        help="Number of processes")
     parser.add_argument(
         "--pyannote-cfg",
         default="dia_ami",

@@ -106,7 +106,8 @@ def cut_with_segment(
         e = int(last_end * sr)
         out.append(data[s:e])
         timestamps.append((last_start, last_end))
-        last_start = max(last_end, audio_align_data.data[cut_index].end - padding_start)
+        last_start = max(
+            last_end, audio_align_data.data[cut_index].end - padding_start)
 
     if index_align[-1] < len(audio_align_data[-1]):
         s = int(last_start * sr)
@@ -148,7 +149,8 @@ def segment_word_align(
                     print(word_align_data.target)
                     print(align.word, target[index_target_transcription])
                 assert align.word == target[index_target_transcription]
-            index_char_transcription += len(target[index_target_transcription]) + 1
+            index_char_transcription += len(
+                target[index_target_transcription]) + 1
             index_target_transcription += 1
             continue
         if index_align == 0:
@@ -165,7 +167,8 @@ def segment_word_align(
             index_char_transcription += 1
 
         out.append(
-            CutIndex(index_word=index_char_transcription - 1, index_align=index_align)
+            CutIndex(index_word=index_char_transcription -
+                     1, index_align=index_align)
         )
         cum_size = 0
 
@@ -228,10 +231,11 @@ def remove_extremities(
     start = max(0, audio_align_data.data[index_start].start - padding_start)
     out_data = [
         AlignedWord(max(0, x.start - start), max(0, x.end - start), x.word)
-        for x in audio_align_data.data[index_start : index_end + 1]
+        for x in audio_align_data.data[index_start: index_end + 1]
     ]
     e = int(
-        min(data.size(0), (audio_align_data.data[index_end].end + padding_end) * sr)
+        min(data.size(0),
+            (audio_align_data.data[index_end].end + padding_end) * sr)
     )
     s = int(start * sr)
     return data[s:e], AlignedData(audio_align_data.file_id, out_data)
@@ -362,8 +366,10 @@ def process_session_lang(
         try:
             if punc_mark is not None:
                 path_tsv = dir_audio / f"{w_d.file_id}.tsv"
-                align_text = add_punc_from_tsv(path_tsv, align_text, chars, punc_mark)
-            final_wd = create_word_align_file(w_d.file_id, align_text, w_d.decoded)
+                align_text = add_punc_from_tsv(
+                    path_tsv, align_text, chars, punc_mark)
+            final_wd = create_word_align_file(
+                w_d.file_id, align_text, w_d.decoded)
             dir_session = dir_out / final_wd.file_id
             path_audio = dir_audio / f"{final_wd.file_id}.flac"
             if not path_audio.is_file():
@@ -416,13 +422,16 @@ class FinalAudioSegmenter:
 
     def processs_session(self, session_id: str):
 
-        path_wer = self.root_wer / f"{session_id}_{self.lang}_wer_no_lm_wav2letter.json"
-        path_align = self.root_align / f"{session_id}_{self.lang}_align_wav2letter.txt"
+        path_wer = self.root_wer / \
+            f"{session_id}_{self.lang}_wer_no_lm_wav2letter.json"
+        path_align = self.root_align / \
+            f"{session_id}_{self.lang}_align_wav2letter.txt"
 
         dir_audio = self.get_dir_paragraph(session_id)
 
         if not dir_audio.is_dir():
-            raise RuntimeError(f"ERROR: paragraph data not found at {dir_audio}")
+            raise RuntimeError(
+                f"ERROR: paragraph data not found at {dir_audio}")
 
         dir_out = self.root_out / session_id
         process_session_lang(
@@ -445,7 +454,8 @@ class FinalAudioSegmenter:
         print(f"Launching the segmentation on {len(session_ids)} sessions")
         with Pool(num_proc) as pool:
             out = list(
-                pool.imap_unordered(self.processs_session, session_ids, chunksize=30)
+                pool.imap_unordered(self.processs_session,
+                                    session_ids, chunksize=30)
             )
 
 
@@ -497,7 +507,8 @@ if __name__ == "__main__":
         default=8,
         help="Number of processes to use",
     )
-    parser.add_argument("--lang", type=str, required=True, help="Language Code.")
+    parser.add_argument("--lang", type=str, required=True,
+                        help="Language Code.")
     parser.add_argument(
         "-o", "--output", type=str, required=True, help="Output directory."
     )

@@ -69,7 +69,7 @@ def digit2text(text: str, lang: str) -> str:
     is_negative = text[0] == "-"
     out = text.lstrip((string.punctuation))
     out_tmp = out.rstrip((string.punctuation))
-    suffix = "" if out == out_tmp else out[len(out_tmp) :]
+    suffix = "" if out == out_tmp else out[len(out_tmp):]
     out = out_tmp.replace(",", ".")
     out = out.replace(":", ".")
 
@@ -77,7 +77,7 @@ def digit2text(text: str, lang: str) -> str:
     m = re.search(r"^(\D+)", out)
     if m:
         prefix = m.groups()[0]
-        return prefix + " " + digit2text(out[len(prefix) :], lang) + suffix
+        return prefix + " " + digit2text(out[len(prefix):], lang) + suffix
 
     # leading digits, e.g. 50th, 1900s
     to_format = "cardinal"
@@ -101,7 +101,7 @@ def digit2text(text: str, lang: str) -> str:
 
     m = re.search(r"\b(\d+)(\D+)", out)
     if m:
-        suffix = " " + digit2text(out[len(m.groups()[0]) :], lang) + suffix
+        suffix = " " + digit2text(out[len(m.groups()[0]):], lang) + suffix
         out = m.groups()[0]
 
     if is_negative:
@@ -123,7 +123,8 @@ def digit2text(text: str, lang: str) -> str:
         d = digit2text(out, lang="en")
     except Exception as e:
         d = ""
-        logging.warning(f"cannot process {out} ({num}) with {lang} in {to_format} mode")
+        logging.warning(
+            f"cannot process {out} ({num}) with {lang} in {to_format} mode")
 
     if suffix:
         d = d + suffix
@@ -207,7 +208,7 @@ def main(args):
             members = [
                 i for i in f.getmembers()
                 if i.name.startswith(f"txt/{args.lang}")
-                   and not (out_root / i.name).exists()
+                and not (out_root / i.name).exists()
             ]
             f.extractall(out_root, members=members)
         with tarfile.open(out_root / "tools.tgz", "r:gz") as f:
@@ -222,7 +223,8 @@ def main(args):
                 f"< {p.as_posix()} > {cur_out_path.as_posix()}"
             )
             with open(cur_out_path) as f_o:
-                cur_text.update(r.strip() for r in f_o if not r.startswith("<"))
+                cur_text.update(r.strip()
+                                for r in f_o if not r.startswith("<"))
         text.extend(cur_text)
     assert len(text) > 0, "Cannot load any text. Aborting."
 

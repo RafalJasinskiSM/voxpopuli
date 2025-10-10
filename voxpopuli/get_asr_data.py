@@ -63,14 +63,14 @@ def get(args):
         items[in_path.as_posix()][out_path.as_posix()] = timestamps
         manifest.append(
             (
-             out_path.stem,
-             r["original_text"],
-             r["normed_text"],
-             r["speaker_id"],
-             split,
-             r["gender"],
-             r.get("is_gold_transcript", str(False)),
-             r.get("accent", str(None))
+                out_path.stem,
+                r["original_text"],
+                r["normed_text"],
+                r["speaker_id"],
+                split,
+                r["gender"],
+                r.get("is_gold_transcript", str(False)),
+                r.get("accent", str(None))
             )
         )
     items = list(items.items())

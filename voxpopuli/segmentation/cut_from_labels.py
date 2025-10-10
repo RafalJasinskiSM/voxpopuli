@@ -40,7 +40,8 @@ def get_ts_base(row, idx_: Dict[str, int]) -> List[Timestamp]:
 
 def get_ts_speaker(row, idx_: Dict[str, int]) -> List[Timestamp]:
     return [
-        Timestamp(float(row[idx_["speaker_start"]]), float(row[idx_["speaker_end"]]))
+        Timestamp(float(row[idx_["speaker_start"]]),
+                  float(row[idx_["speaker_end"]]))
     ]
 
 
@@ -86,7 +87,8 @@ def cut_session(
     lang: str,
 ) -> None:
 
-    sound, sr = sf.read(str(get_path_full_audio(root_original, session_name, lang)))
+    sound, sr = sf.read(
+        str(get_path_full_audio(root_original, session_name, lang)))
     for loc_path, vad in ts_2_names.items():
         full_path = root_out / loc_path
         full_path.parent.mkdir(exist_ok=True, parents=True)
@@ -102,7 +104,7 @@ def cut_with_vad(sound: np.array, sr: int, vad: List[Timestamp]) -> np.array:
 
     out = []
     for ts in vad:
-        out += [sound[int(ts.t_start * sr) : int(ts.t_end * sr)]]
+        out += [sound[int(ts.t_start * sr): int(ts.t_end * sr)]]
     return np.concatenate(out, axis=0)
 
 
@@ -155,7 +157,8 @@ def main(args):
     else:
         raise RuntimeError(f"Invalid mode {args.mode}")
 
-    annot_dict = load_annot_file(path_annotations, path_extractor, timestamp_extractor)
+    annot_dict = load_annot_file(
+        path_annotations, path_extractor, timestamp_extractor)
     segmenter = FileSegmenter(path_data, path_out, annot_dict)
     segmenter.run(n_procs=args.n_procs)
 
@@ -191,8 +194,8 @@ if __name__ == "__main__":
         type=str,
         choices=["labelled", "per_speaker", "per_speaker_vad"],
         help="labelled to segment the labelled data. "
-              "per_speaker to cut the 10k data per speaker "
-              "per_speaker_vad to add the vad of top of the segmentation of the 10k data."
+        "per_speaker to cut the 10k data per speaker "
+        "per_speaker_vad to add the vad of top of the segmentation of the 10k data."
     )
 
     main(parser.parse_args())

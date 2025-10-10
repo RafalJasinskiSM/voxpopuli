@@ -127,7 +127,8 @@ def reinsert_punctuation(
 
     quick_norm_ref = quick_norm(str_original, char_set + punc_list)
     align_path = get_align_index_path(quick_norm_ref, str_normed)
-    punc_indexes = [(i, x) for i, x in enumerate(quick_norm_ref) if x in punc_list]
+    punc_indexes = [(i, x)
+                    for i, x in enumerate(quick_norm_ref) if x in punc_list]
     last_index = 0
 
     out = ""

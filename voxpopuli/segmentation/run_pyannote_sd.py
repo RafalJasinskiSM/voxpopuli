@@ -20,11 +20,14 @@ from voxpopuli.segmentation import get_batches, get_all_audio_for_lang
 
 
 def check(path_audio: Path, pyannote_cfg="dia_ami"):
-    rttm_path = path_audio.parent / f"{path_audio.stem}.pyannote.{pyannote_cfg}.rttm"
-    pkl_path = path_audio.parent / f"{path_audio.stem}.pyannote.{pyannote_cfg}.pkl"
+    rttm_path = path_audio.parent / \
+        f"{path_audio.stem}.pyannote.{pyannote_cfg}.rttm"
+    pkl_path = path_audio.parent / \
+        f"{path_audio.stem}.pyannote.{pyannote_cfg}.pkl"
     if rttm_path.exists() and pkl_path.exists():
         return True
-    json_path = path_audio.parent / f"{path_audio.stem}.pyannote.{pyannote_cfg}.json"
+    json_path = path_audio.parent / \
+        f"{path_audio.stem}.pyannote.{pyannote_cfg}.json"
     if json_path.exists():
         return True
     return False
@@ -54,7 +57,8 @@ def segment_audio_overlap(
         num_frames = min(frames, s_data - offset)
         if num_frames <= 0:
             break
-        data = torchaudio.load(str(path_audio), num_frames=num_frames, offset=offset)[0]
+        data = torchaudio.load(
+            str(path_audio), num_frames=num_frames, offset=offset)[0]
         path_out = dir_out / f"{path_audio.stem}_{index}.flac"
         torchaudio.save(str(path_out), data, sr)
         offset += frames // 2
@@ -136,10 +140,12 @@ def get_segments(
             print(f"{id_}: running pyannote on {index} / {len(list_str)}")
             sd = pyannote_pipeline({"uri": "filename", "audio": path_})
             rttm_path = (
-                audio_path.parent / f"{audio_path.stem}.pyannote.{pyannote_cfg}.rttm"
+                audio_path.parent /
+                f"{audio_path.stem}.pyannote.{pyannote_cfg}.rttm"
             )
             pkl_path = (
-                audio_path.parent / f"{audio_path.stem}.pyannote.{pyannote_cfg}.pkl"
+                audio_path.parent /
+                f"{audio_path.stem}.pyannote.{pyannote_cfg}.pkl"
             )
             with open(rttm_path, "w") as f:
                 sd.write_rttm(f)
@@ -166,8 +172,10 @@ def get(audio_path: str, device: int = 0, pyannote_cfg="dia_ami"):
         "pyannote/pyannote-audio", pyannote_cfg, pipeline=True
     )
     sd = pyannote_pipeline({"uri": "filename", "audio": audio_path})
-    rttm_path = audio_path.parent / f"{audio_path.stem}.pyannote.{pyannote_cfg}.rttm"
-    pkl_path = audio_path.parent / f"{audio_path.stem}.pyannote.{pyannote_cfg}.pkl"
+    rttm_path = audio_path.parent / \
+        f"{audio_path.stem}.pyannote.{pyannote_cfg}.rttm"
+    pkl_path = audio_path.parent / \
+        f"{audio_path.stem}.pyannote.{pyannote_cfg}.pkl"
     with open(rttm_path, "w") as f:
         sd.write_rttm(f)
     with open(pkl_path, "wb") as f:
@@ -195,7 +203,8 @@ def main(args):
         audio_paths += get_all_audio_for_lang(root, lang)
 
     if not args.overwrite:
-        audio_paths = [x for x in audio_paths if not check(x, args.pyannote_cfg)]
+        audio_paths = [x for x in audio_paths if not check(
+            x, args.pyannote_cfg)]
 
     if args.max_num is not None:
         audio_paths = audio_paths[: args.max_num]
